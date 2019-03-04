@@ -3,6 +3,22 @@ let knex=require('knex');
 
 let app=express();
 
+app.get('/api/genres', function(request, response){
+    let connection = knex({
+        client: 'sqlite3',
+        connection:{
+            filename:'chinook.db'
+        }
+    });
+
+    connection
+    .select()
+    .from('genres')
+    .then((genre) => {
+        response.json(genre);
+    });
+});
+
 app.get('/api/genres/:id', function(request, response){
     let id=request.params.id;
     console.log(id);
