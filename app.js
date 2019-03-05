@@ -46,8 +46,69 @@ app.get('/api/genres/:id', function(request, response){
     });
 });
 
+app.get('/api/artists', function(request, response){
+    let name=request.query.filter;
+    console.log(name);
 
+    let connection = knex({
+        client: 'sqlite3',
+        connection:{
+            filename:'chinook.db'
+        }
+    });
 
+    if(name){
+        connection
+        .select('ArtistId as id','Name as name')
+        .from('artists')
+        .where('name','like', name)
+        .first()
+        .then((artist) => {
+            if(artist){
+                response.json(artist);
+            } else {
+                response.status(404).json({
+                    error: `${name} not found`
+                });
+            }
+        });
+    } else {
+        connection
+        .select('ArtistId as id','Name as name')
+        .from('artists')
+        .then((artist) => {
+            response.json(artist);
+        });
+    }
+    
+});
+
+// app.get('/api/artists?filter=:id', function(request,response){
+//     let name=request.query.filter;
+//     console.log(name);
+
+//     let connection = knex({
+//         client: 'sqlite3',
+//         connection:{
+//             filename:'chinook.db'
+//         }
+//     });
+
+//     connection
+//     .select('ArtistId as id','Name as name')
+//     .from('artists')
+//     .where('name','like', name)
+//     .first()
+//     .then((artist) => {
+//         if(artist){
+//             response.json(artist);
+//         } else {
+//             response.status(404).json({
+//                 error: `${name} not found`
+//             });
+//         }
+//     });
+// });
 // app.get('/api/genres/:id',function(request, response){
 //     let id=request.params.id;
     
